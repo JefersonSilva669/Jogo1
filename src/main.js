@@ -22,9 +22,11 @@ let nitroActive = false;
 let currentSpeed = START_SPEED;
 
 // Keys
-const keys = { arrowleft: false, arrowright: false, a: false, d: false, n: false };
+const keys = { arrowleft: false, arrowright: false, arrowup: false, arrowdown: false, w: false, s: false, a: false, d: false, n: false };
 let playerTargetX = 0;
 let playerVelocityX = 0;
+let speedOffset = 0;
+let buildingTex, playerCarTex;
 
 // UI Elements
 const uiMainMenu = document.getElementById('main-menu');
@@ -138,12 +140,14 @@ function init() {
     scene.add(road);
 
     // Player Car
+    playerCarTex = createCarTexture('#222233', '#00f3ff');
     const carGeo = new THREE.BoxGeometry(2, 1, 4);
     const carMat = new THREE.MeshStandardMaterial({
-        color: 0x050510,
+        color: 0x333333,
+        map: playerCarTex,
         emissive: 0xff007f,
-        emissiveIntensity: 0.6,
-        wireframe: true
+        emissiveIntensity: 0.3,
+        wireframe: false
     });
     player = new THREE.Mesh(carGeo, carMat);
     scene.add(player);
@@ -167,12 +171,14 @@ function init() {
 }
 
 function spawnBuilding(initial = false) {
+    if (!buildingTex) buildingTex = createBuildingTexture();
     const geo = new THREE.BoxGeometry(Math.random() * 5 + 5, Math.random() * 30 + 10, Math.random() * 5 + 5);
     const mat = new THREE.MeshStandardMaterial({
-        color: 0x111122,
+        color: 0x555566,
+        map: buildingTex,
         emissive: Math.random() > 0.5 ? 0xff007f : 0x00f3ff,
-        emissiveIntensity: Math.random() * 0.5,
-        wireframe: Math.random() > 0.7
+        emissiveIntensity: 0.15,
+        wireframe: false
     });
     const b = new THREE.Mesh(geo, mat);
 
@@ -188,18 +194,20 @@ function spawnBuilding(initial = false) {
 
 function spawnObstacle() {
     const types = [
-        { type: 'truck', w: 3.5, h: 4, d: 8, speedRatio: 0.5, em: 0xff0000 },
-        { type: 'pickup', w: 2.2, h: 2, d: 5, speedRatio: 0.8, em: 0x00ff00 },
-        { type: 'super', w: 2, h: 0.8, d: 4, speedRatio: -0.5, em: 0xffff00 } // Negative speed ratio = contramão
+        { type: 'truck', w: 3.5, h: 4, d: 8, speedRatio: 0.5, em: 0xff0000, color: '#882222' },
+        { type: 'pickup', w: 2.2, h: 2, d: 5, speedRatio: 0.8, em: 0x00ff00, color: '#228822' },
+        { type: 'super', w: 2, h: 0.8, d: 4, speedRatio: -0.5, em: 0xffff00, color: '#888822' }
     ];
     let selectedType = types[Math.floor(Math.random() * types.length)];
 
+    const hexColor = '#' + selectedType.em.toString(16).padStart(6, '0');
     const geo = new THREE.BoxGeometry(selectedType.w, selectedType.h, selectedType.d);
     const mat = new THREE.MeshStandardMaterial({
-        color: 0x010101,
+        color: 0x222222,
+        map: createCarTexture(selectedType.color, hexColor),
         emissive: selectedType.em,
-        emissiveIntensity: 0.8,
-        wireframe: true
+        emissiveIntensity: 0.4,
+        wireframe: false
     });
     const obs = new THREE.Mesh(geo, mat);
 
@@ -254,6 +262,7 @@ function startGame() {
     score = 0;
     gameTime = 0;
     currentSpeed = START_SPEED;
+    speedOffset = 0;
     nitroCounter = MAX_NITRO;
     isPlaying = true;
     isPaused = false;
@@ -327,7 +336,35 @@ function animate() {
         gameTime += dt;
 
         // Linear Progression
-        currentSpeed = START_SPEED + (ACCEL * gameTime);
+        let baseSpeed = START_SPEED + (ACCEL * gameTime);
+
+        // Manual Acceleration & Braking
+        let accelerationRate = 60;
+        let brakingRate = 80;
+
+        if (keys['arrowup'] || keys['w']) {
+            speedOffset += accelerationRate * dt;
+            if (speedOffset > 80) speedOffset = 80; // Max speed bonus
+        } else if (keys['arrowdown'] || keys['s']) {
+            speedOffset -= brakingRate * dt;
+            if (speedOffset < -80) speedOffset = -80; // Max brake penalty
+
+            // Limit brake so player never stops (minimum 30 km/h)
+            if (baseSpeed + speedOffset < 30) {
+                speedOffset = 30 - baseSpeed;
+            }
+        } else {
+            // Cruise control (Return to base speed)
+            if (speedOffset > 0) {
+                speedOffset -= 20 * dt;
+                if (speedOffset < 0) speedOffset = 0;
+            } else if (speedOffset < 0) {
+                speedOffset += 40 * dt; // Brakes un-lock faster 
+                if (speedOffset > 0) speedOffset = 0;
+            }
+        }
+
+        currentSpeed = baseSpeed + speedOffset;
 
         // Nitro
         nitroActive = false;
@@ -434,3 +471,63 @@ function animate() {
 
 // Initial Call
 init();
+
+// --- PROCEDURAL TEXTURES ---
+function createBuildingTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+
+    // Background facade
+    ctx.fillStyle = '#0f111a';
+    ctx.fillRect(0, 0, 256, 512);
+
+    // Windows
+    for (let y = 10; y < 500; y += 30) {
+        for (let x = 10; x < 240; x += 35) {
+            // Chance to spawn a window
+            if (Math.random() > 0.4) {
+                let color = '#333344'; // Lights off
+                if (Math.random() > 0.7) color = '#00f3ff'; // Lights On Blue
+                if (Math.random() > 0.9) color = '#ff007f'; // Lights On Pink
+
+                ctx.fillStyle = color;
+                ctx.fillRect(x, y, 15, 20);
+            }
+        }
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    return texture;
+}
+
+function createCarTexture(baseColor, accentColor) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+
+    // Main Body
+    ctx.fillStyle = baseColor;
+    ctx.fillRect(0, 0, 128, 128);
+
+    // Roof / Windows
+    ctx.fillStyle = '#111115';
+    ctx.fillRect(20, 20, 88, 88);
+
+    // Glass highlight/Neon outline
+    ctx.strokeStyle = accentColor;
+    ctx.lineWidth = 4;
+    ctx.strokeRect(20, 20, 88, 88);
+
+    // Sport / Neon stripes down the vehicle
+    ctx.fillStyle = accentColor;
+    ctx.fillRect(50, 0, 8, 128);
+    ctx.fillRect(70, 0, 8, 128);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    return texture;
+}
