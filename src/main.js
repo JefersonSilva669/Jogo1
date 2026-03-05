@@ -310,6 +310,12 @@ function showActionText(text) {
     }, 1000);
 }
 
+function updateUI() {
+    scoreDisplay.innerText = `Pontos: ${Math.floor(score)}`;
+    speedDisplay.innerText = `${Math.floor(currentSpeed)} km/h`;
+    nitroBar.style.width = `${(nitroCounter / MAX_NITRO) * 100}%`;
+}
+
 let obstacleSpawnTimer = 0;
 
 function animate() {
