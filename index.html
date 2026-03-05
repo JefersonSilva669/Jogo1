@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Velocity</title>
+    <link rel="stylesheet" href="src/style.css">
+    <!-- Three.js (r128) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <div id="ui-container">
+        <!-- Main Menu -->
+        <div id="main-menu" class="screen">
+            <h1 class="glitch" data-text="URBAN VELOCITY">URBAN VELOCITY</h1>
+            <p>High Score: <span id="high-score-display">0</span></p>
+            <p>Controles:<br>Setas ou A/D para mover | N para Nitro | ESC para Pausar</p>
+            <button id="start-btn">Start Game</button>
+        </div>
+
+        <!-- HUD -->
+        <div id="hud" class="screen hidden">
+            <div class="hud-top">
+                <div id="score-display">Pontos: 0</div>
+                <div id="speed-display">0 km/h</div>
+            </div>
+            <div class="hud-bottom">
+                <div id="nitro-bar-container">
+                    <div id="nitro-bar"></div>
+                </div>
+                <div class="nitro-label">NITRO (N)</div>
+            </div>
+        </div>
+
+        <!-- Pause Menu -->
+        <div id="pause-menu" class="screen hidden">
+            <h2>PAUSADO</h2>
+            <button id="resume-btn">Continuar</button>
+            <button id="quit-btn">Sair</button>
+        </div>
+
+        <!-- Game Over Menu -->
+        <div id="game-over-menu" class="screen hidden">
+            <h2>GAME OVER</h2>
+            <p>Sua Pontuação: <span id="final-score">0</span></p>
+            <button id="restart-btn">Restart</button>
+            <button id="menu-btn">Menu Principal</button>
+        </div>
+        
+        <!-- Action Text -->
+        <div id="action-text-container"></div>
+    </div>
+
+    <!-- Game Script -->
+    <script src="src/main.js"></script>
+</body>
+</html>

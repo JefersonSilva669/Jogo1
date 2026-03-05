@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+:root {
+    --neon-pink: #ff007f;
+    --neon-blue: #00f3ff;
+    --neon-purple: #9d00ff;
+    --dark-bg: #050510;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: var(--dark-bg);
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    user-select: none;
+}
+
+canvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+#ui-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(5, 5, 16, 0.85);
+    pointer-events: auto;
+    transition: opacity 0.3s;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+h1.glitch {
+    font-size: 5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    position: relative;
+    color: white;
+    text-shadow: 2px 2px 10px var(--neon-pink), -2px -2px 10px var(--neon-blue);
+    margin-bottom: 20px;
+    letter-spacing: 5px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 4rem;
+    color: var(--neon-pink);
+    text-shadow: 0 0 10px var(--neon-pink);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+p {
+    font-size: 1.2rem;
+    text-align: center;
+    color: var(--neon-blue);
+    text-shadow: 0 0 5px var(--neon-blue);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+button {
+    background: transparent;
+    color: white;
+    border: 2px solid var(--neon-pink);
+    border-radius: 5px;
+    padding: 15px 30px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 10px;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px var(--neon-pink) inset, 0 0 15px var(--neon-pink);
+    transition: all 0.2s;
+}
+
+button:hover {
+    background: var(--neon-pink);
+    color: var(--dark-bg);
+    box-shadow: 0 0 30px var(--neon-pink) inset, 0 0 30px var(--neon-pink);
+    transform: scale(1.05);
+}
+
+#hud {
+    background: transparent;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.hud-top {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+#score-display, #speed-display {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--neon-blue);
+    text-shadow: 0 0 10px var(--neon-blue);
+}
+
+.hud-bottom {
+    width: 100%;
+    padding: 40px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#nitro-bar-container {
+    width: 400px;
+    height: 20px;
+    border: 2px solid var(--neon-purple);
+    background: rgba(0,0,0,0.5);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px var(--neon-purple);
+    margin-bottom: 10px;
+}
+
+#nitro-bar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
+    box-shadow: 0 0 20px var(--neon-pink);
+    transition: width 0.1s linear;
+}
+
+.nitro-label {
+    font-size: 1rem;
+    color: var(--neon-purple);
+    text-shadow: 0 0 5px var(--neon-purple);
+    letter-spacing: 2px;
+}
+
+#action-text-container {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 20;
+}
+
+.action-text {
+    font-size: 3rem;
+    color: #ffff00;
+    text-shadow: 0 0 20px #ffaa00;
+    font-weight: 900;
+    pointer-events: none;
+    animation: popup 1s forwards;
+    position: absolute;
+    width: 400px;
+    text-align: center;
+    left: -200px; /* Center horizontally relative to parent */
+}
+
+@keyframes popup {
+    0% { transform: scale(0.5); opacity: 0; top: 0; }
+    20% { transform: scale(1.2); opacity: 1; top: -20px; }
+    80% { transform: scale(1); opacity: 1; top: -50px; }
+    100% { transform: scale(1.5); opacity: 0; top: -80px; }
+}
+
+@media (max-width: 600px) {
+    h1.glitch { font-size: 3rem; }
+    #nitro-bar-container { width: 80%; }
+    #score-display, #speed-display { font-size: 1.5rem; }
+}
