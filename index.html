@@ -15,15 +15,74 @@
         <!-- Main Menu -->
         <div id="main-menu" class="screen">
             <h1 class="glitch" data-text="URBAN VELOCITY">URBAN VELOCITY</h1>
-            <p>High Score: <span id="high-score-display">0</span></p>
-            <p>Controles:<br>Setas/WASD: Mover, Acelerar e Freiar | N: Nitro | ESC: Pausar</p>
-            <button id="start-btn">Start Game</button>
+            <div class="menu-stats-row">
+                <div class="menu-stat">
+                    <span class="stat-icon">🏆</span>
+                    <span class="stat-label">RECORDE</span>
+                    <span id="high-score-display" class="stat-value">0</span>
+                </div>
+                <div class="menu-stat">
+                    <span class="stat-icon">🪙</span>
+                    <span class="stat-label">MOEDAS</span>
+                    <span id="coins-display" class="stat-value gold">0</span>
+                </div>
+            </div>
+            <p>Setas/WASD: Mover | N: Nitro | ESC: Pausar</p>
+            <div class="menu-buttons">
+                <button id="start-btn">▶ Jogar</button>
+                <button id="garage-btn" class="btn-gold">🚗 Garagem</button>
+            </div>
+        </div>
+
+        <!-- Environment Selection -->
+        <div id="env-menu" class="screen hidden">
+            <h2 class="menu-title">ESCOLHA O CENÁRIO</h2>
+            <div class="selection-grid">
+                <div class="selection-card" data-env="city_night">
+                    <div class="selection-img city-night-img">🏙️</div>
+                    <span>Cidade (Noite)</span>
+                </div>
+                <div class="selection-card" data-env="city_morning">
+                    <div class="selection-img city-morning-img">☀️</div>
+                    <span>Cidade (Manhã)</span>
+                </div>
+                <div class="selection-card" data-env="desert">
+                    <div class="selection-img desert-img">🌵</div>
+                    <span>Deserto</span>
+                </div>
+            </div>
+            <button id="env-back-btn">← Voltar</button>
+        </div>
+
+        <!-- Road Type Selection -->
+        <div id="road-menu" class="screen hidden">
+            <h2 class="menu-title">TIPO DE PISTA</h2>
+            <div class="selection-grid row">
+                <div class="selection-card" data-road="one_way">
+                    <div class="selection-img">⬆️</div>
+                    <span>Mão Única</span>
+                </div>
+                <div class="selection-card" data-road="two_way">
+                    <div class="selection-img">⬆️⬇️</div>
+                    <span>Mão Dupla</span>
+                </div>
+            </div>
+            <button id="road-back-btn">← Voltar</button>
         </div>
 
         <!-- HUD -->
         <div id="hud" class="screen hidden">
             <div class="hud-top">
-                <div id="score-display">Pontos: 0</div>
+                <div class="hud-left">
+                    <div id="score-display">Pontos: 0</div>
+                    <div id="record-display" class="hud-record">🏆 Recorde: 0</div>
+                </div>
+                <div class="hud-center">
+                    <div id="coin-hud" class="coin-counter">
+                        <span class="coin-spin">🪙</span>
+                        <span id="coin-hud-count">0</span>
+                    </div>
+                </div>
                 <div id="speed-display">0 km/h</div>
             </div>
             <div class="hud-bottom">
@@ -44,9 +103,39 @@
         <!-- Game Over Menu -->
         <div id="game-over-menu" class="screen hidden">
             <h2>GAME OVER</h2>
-            <p>Sua Pontuação: <span id="final-score">0</span></p>
-            <button id="restart-btn">Restart</button>
-            <button id="menu-btn">Menu Principal</button>
+            <div class="gameover-stats">
+                <div class="go-stat">
+                    <span>Pontuação</span>
+                    <span id="final-score" class="go-value">0</span>
+                </div>
+                <div class="go-stat highlight-gold">
+                    <span>🪙 Moedas Ganhas</span>
+                    <span id="final-coins" class="go-value gold">+0</span>
+                </div>
+                <div class="go-stat">
+                    <span>🏆 Recorde</span>
+                    <span id="final-record" class="go-value">0</span>
+                </div>
+                <div class="go-stat">
+                    <span>🪙 Total de Moedas</span>
+                    <span id="total-coins-display" class="go-value gold">0</span>
+                </div>
+            </div>
+            <div class="gameover-btns">
+                <button id="restart-btn">Jogar Novamente</button>
+                <button id="menu-btn">Menu Principal</button>
+            </div>
+        </div>
+
+        <!-- Garage Screen -->
+        <div id="garage-menu" class="screen hidden">
+            <h2 class="garage-title">🚗 GARAGEM</h2>
+            <div class="garage-coins-bar">
+                <span class="coin-spin">🪙</span>
+                <span id="garage-coins" class="gold">0</span> moedas disponíveis
+            </div>
+            <div id="car-grid" class="car-grid"></div>
+            <button id="garage-back-btn">← Voltar</button>
         </div>
 
         <!-- Action Text -->
